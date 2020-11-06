@@ -20,23 +20,86 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+# наш проект собирается PSDK не ниже 5.0 версии (win98)
+!IFNDEF  APPVER
+!MESSAGE nmake: APPVER not defined, set APPVER to 5.0 (default)
+APPVER   = 5.0
+OPTS     = APPVER="5.0"
+!ENDIF
 
-LN=link.exe
-CC=cl.exe
-RC=rc.exe
+!include <win32.mak>
 
-CFLAGS=/O2 /GA /nologo /DWINVER=0x0500
-OBJ=trayIt.obj
-LIBS=COMCTL32.LIB SHELL32.LIB USER32.LIB GDI32.LIB
+!IF $(NMAKE_WINVER) == 0x0400
+!ERROR   nmake: minimum PSDK version is 5.0 (use: nmake APPVER="5.0")
+!ENDIF
 
-trayIt.exe: trayIt.obj rsrc.res
-	$(LN) trayIt.obj $(LIBS) rsrc.res
+# старые PSDK задают опцию /PDB:NONE по умолчанию, удаляем
+!IFNDEF NODEBUG
+lflags = $(lflags:/PDB:NONE=)
+!ENDIF
 
-trayIt.obj: trayIt.c
-	$(CC) $(CFLAGS) trayIt.c $(LIBS)
+!IFNDEF  OUTDIR
+!IFNDEF  NODEBUG
+OUTDIR   = BUILD\PSDK$(APPVER)\Debug
+!ELSE
+OUTDIR   = BUILD\PSDK$(APPVER)\Release
+!ENDIF
+!ENDIF
 
-rsrc.res: rsrc.rc
-	$(RC) rsrc.rc
+
+PROJECT  = trayit
+
+# исходники
+PROJ_SRC = \
+            trayit.c
+
+# объекты компиляции
+PROJ_OBJS   = \
+     $(OUTDIR)\trayit.obj
+
+# библиотеки
+EXT_LIBS    = $(olelibsmt) shell32.lib comctl32.Lib
+
+# ресурсы
+RC_DEP      = icon.ico
+RC_FILE     = rsrc.rc
+
+# флаги компиляции
+BUILD_FLAGS = $(cdebug) $(cflags) $(cvarsmt)
+
+# файл с флагами предыдущей сборки
+BUILD_INFO  = $(OUTDIR)\build.info
+
+
+all: $(OUTDIR) .flags $(OUTDIR)\$(PROJECT).exe
+
+$(OUTDIR):
+     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
+
+# обновление файла флагов сборки (при изменении оных)
+.flags:
+    @ <<~flags.bat
+    @SET CURRENT_FLAGS=
+    @IF EXIST $(BUILD_INFO) SET /p CURRENT_FLAGS=< $(BUILD_INFO)
+    @IF "%CURRENT_FLAGS%" NEQ "$(cc) $(BUILD_FLAGS)" <NUL SET /p="$(cc) $(BUILD_FLAGS)" > $(BUILD_INFO)
+    @EXIT 0
+<<
+
+# при изменении флагов - полная пересборка!
+$(PROJ_SRC): $(BUILD_INFO)
+
+$(OUTDIR)\$(PROJECT).res: $(RC_FILE) $(RC_DEP) $(BUILD_INFO)
+    $(rc) $(rcflags) $(rcvars) /fo $@ $(RC_FILE)
+
+.c{$(OUTDIR)\}.obj:
+    $(cc) $(BUILD_FLAGS) /Fo"$(OUTDIR)\\" /Fd"$(OUTDIR)\\" $**
+
+.cpp{$(OUTDIR)\}.obj:
+    $(cc) $(BUILD_FLAGS) /Fo"$(OUTDIR)\\" /Fd"$(OUTDIR)\\" $**
+
+$(OUTDIR)\$(PROJECT).exe: $(PROJ_OBJS) $(OUTDIR)\$(PROJECT).res
+    $(link) $(linkdebug) $(guilflags) $** $(EXT_LIBS) -out:$@ $(MAPFILE)
 
 clean:
-	del trayIt.exe trayIt.obj rsrc.res
+     $(CLEANUP)
+

@@ -1,0 +1,4 @@
+BUILD/
+*~
+*.bak
+*.cscope_file_list
