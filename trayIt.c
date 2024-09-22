@@ -1,5 +1,5 @@
 /* This file is a part of trayIt utility.
- Copyright © 2016-2019 Видершпан Евгений Сергеевич
+ Copyright © 2016-2019 Sergeevich Evgenij Vidershpan
 
  Permission is hereby granted, free of charge, to any person obtaining
  a copy of this software and associated documentation files (the
@@ -26,7 +26,7 @@
 #include <commctrl.h>
 
 #define MY_MAIN_WND_CLASS "TRAY_IT_CLASS"
-#define TRAYIT_PROP_ID "HidenByTrayIt"
+#define TRAYIT_PROP_ID "HiddenByTrayIt"
 #define MAIN_ICON_ID 1578
 #define ID_LISTBOX 33
 
@@ -128,10 +128,10 @@ void ShowMenu()
 	hmenu = CreatePopupMenu();
 	if (!hmenu)
 	{
-		MessageBox(hMainWnd, "Error create menu!", "TrayIt", MB_OK|MB_ICONERROR);
+		MessageBox(hMainWnd, "Error: Failed to create menu!", "TrayIt", MB_OK|MB_ICONERROR);
 		return;
 	}
-	AppendMenu(hmenu, MF_STRING|MF_DISABLED, 0,   "&Hide active window.\tCTRL+ALT+H");
+	AppendMenu(hmenu, MF_STRING|MF_DISABLED, 0,   "&Hide the actve window.\tCTRL+ALT+H");
 	AppendMenu(hmenu, MF_STRING, IDM_MANAGE,   "&Manage hidden windows");
 	AppendMenu(hmenu, MF_SEPARATOR, 0, NULL);
 	AppendMenu(hmenu, MF_STRING, IDM_EXIT,    "&Exit TrayIt");
@@ -289,7 +289,7 @@ LRESULT MainWndProc(HWND hWnd, UINT uMsg, LONG wParam, LONG lParam)
 					{
 						if (!RemoveProp(hwin, TRAYIT_PROP_ID))
 						{
-							MessageBox(hWnd, "Error Deleting prop!", 0, MB_ICONERROR);
+							MessageBox(hWnd, "Error: Failed to remove icon!", 0, MB_ICONERROR);
 						}
 						ShowWindow(hwin, SW_SHOW);
 						SetForegroundWindow(hwin);
@@ -396,7 +396,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 		
 		hMainWnd = CreateWindowEx(WS_EX_DLGMODALFRAME | WS_EX_CLIENTEDGE,
 				MainWc.lpszClassName,
-                "Tray It v 0.1",
+                "TrayIt v 1.0",
                 WS_CLIPCHILDREN | WS_TILEDWINDOW,
 				0, 0, 400, 300,
                 0, 0,
