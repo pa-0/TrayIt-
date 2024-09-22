@@ -20,7 +20,7 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# наш проект собирается PSDK не ниже 5.0 версии (win98)
+# Built with PSDK minimum version 5.0 or later (win98+)
 !IFNDEF  APPVER
 !MESSAGE nmake: APPVER not defined, set APPVER to 5.0 (default)
 APPVER   = 5.0
@@ -33,7 +33,7 @@ OPTS     = APPVER="5.0"
 !ERROR   nmake: minimum PSDK version is 5.0 (use: nmake APPVER="5.0")
 !ENDIF
 
-# старые PSDK задают опцию /PDB:NONE по умолчанию, удаляем
+# old PSDKs set the /PDB:NONE option by default, REMOVE it
 !IFNDEF NODEBUG
 lflags = $(lflags:/PDB:NONE=)
 !ENDIF
@@ -49,25 +49,25 @@ OUTDIR   = BUILD\PSDK$(APPVER)\Release
 
 PROJECT  = trayit
 
-# исходники
+# sources
 PROJ_SRC = \
             trayit.c
 
-# объекты компиляции
+# compilation objects
 PROJ_OBJS   = \
      $(OUTDIR)\trayit.obj
 
-# библиотеки
+# libraries
 EXT_LIBS    = $(olelibsmt) shell32.lib comctl32.Lib
 
-# ресурсы
+# resources
 RC_DEP      = icon.ico
 RC_FILE     = rsrc.rc
 
-# флаги компиляции
+# compilation flags
 BUILD_FLAGS = $(cdebug) $(cflags) $(cvarsmt)
 
-# файл с флагами предыдущей сборки
+# file with flags of the previous build
 BUILD_INFO  = $(OUTDIR)\build.info
 
 
@@ -76,7 +76,7 @@ all: $(OUTDIR) .flags $(OUTDIR)\$(PROJECT).exe
 $(OUTDIR):
      if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-# обновление файла флагов сборки (при изменении оных)
+# update build flags file (if they change)
 .flags:
     @ <<~flags.bat
     @SET CURRENT_FLAGS=
@@ -85,7 +85,7 @@ $(OUTDIR):
     @EXIT 0
 <<
 
-# при изменении флагов - полная пересборка!
+# when changing flags - complete rebuild!
 $(PROJ_SRC): $(BUILD_INFO)
 
 $(OUTDIR)\$(PROJECT).res: $(RC_FILE) $(RC_DEP) $(BUILD_INFO)
