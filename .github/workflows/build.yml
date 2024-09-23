@@ -13,9 +13,9 @@ jobs:
       with:
         compiler: gcc-6.4.0
     - name: Use compiler
-      shell: cmd
       env:
             CC: ${{ steps.install_cc.outputs.cc }}
+      shell: cmd
       run: |
         cd .\src
         make
