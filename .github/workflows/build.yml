@@ -11,7 +11,7 @@ jobs:
       id: install_cc
       uses: rlalik/setup-cpp-compiler@master
       with:
-        compiler: gcc-6.40
+        compiler: gcc-6.4.0
     - name: Use compiler
       shell: cmd
       env:
