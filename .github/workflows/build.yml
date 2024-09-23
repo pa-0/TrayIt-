@@ -2,20 +2,24 @@ name: 'Build TrayIt!'
 
 on:
   workflow_dispatch:
-
+  
+defaults:
+  run:
+    working-directory: src
+    
 jobs:
   build:
     runs-on: windows-2019
+    strategy:
+      matrix:
+        arch:
+          - amd64
+          - amd64_x86
     steps:
-    - name: Install compiler
-      id: install_cc
-      uses: rlalik/setup-cpp-compiler@master
-      with:
-        compiler: gcc-6.4.0
-    - name: Use compiler
-      env:
-            CC: ${{ steps.install_cc.outputs.cc }}
-      shell: cmd
-      run: |
-        cd D:\a\tray_it\tray_it\src
-        make
+      - uses: actions/checkout@v4
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ matrix.arch }}
+      - name: Build something requiring CL.EXE
+        run: |
+          nmake
