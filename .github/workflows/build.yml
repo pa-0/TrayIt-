@@ -16,7 +16,6 @@ jobs:
       shell: cmd
       env:
             CC: ${{ steps.install_cc.outputs.cc }}
-    - name: build application
       run: |
         cd .\src
         make
