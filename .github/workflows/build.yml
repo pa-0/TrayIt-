@@ -17,5 +17,5 @@ jobs:
             CC: ${{ steps.install_cc.outputs.cc }}
       shell: cmd
       run: |
-        cd .\src
+        cd D:\a\tray_it\tray_it\src
         make
