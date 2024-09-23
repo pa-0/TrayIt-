@@ -3,10 +3,6 @@ name: 'Build TrayIt!'
 on:
   workflow_dispatch:
 
-defaults:
-  run:
-    working-directory: src
-
 jobs:
   build:
     runs-on: windows-2019
@@ -17,11 +13,11 @@ jobs:
       with:
         compiler: gcc-6.40
     - name: Use compiler
-      shell: bash
+      shell: cmd
       env:
             CC: ${{ steps.install_cc.outputs.cc }}
       run: |
-        mkdir ../build
-        cd ../build
+        mkdir .\build
+        cd .\build
     - name: build application
-      run: make build ./src
+      run: make build ../src
