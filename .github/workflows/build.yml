@@ -16,10 +16,13 @@ jobs:
           - amd64
           - amd64_x86
     steps:
-      - uses: actions/checkout@v4
-      - uses: ilammy/msvc-dev-cmd@v1
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Set Up Environment
+        uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: ${{ matrix.arch }}
-      - name: Build something requiring CL.EXE
+      - name: Build TrayIt!
         run: |
+          set SDK_INCLUDE_DIR="D:\a\TrayIt-\TrayIt-\src\include\"
           nmake
