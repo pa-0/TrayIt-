@@ -24,5 +24,6 @@ jobs:
           arch: ${{ matrix.arch }}
       - name: Build TrayIt!
         run: |
-          set INCLUDE = "%INCLUDE%;%GITHUB_WORKSPACE%\src\include"
+          set INCLUDE=%INCLUDE%;%GITHUB_WORKSPACE%\src\include
+          set INCLUDEDIR=%GITHUB_WORKSPACE%\src\include
           nmake
